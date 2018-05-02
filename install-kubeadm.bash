@@ -12,9 +12,24 @@ apt-get update
 
 apt-get install -y docker-ce=17.03.2~ce-0~ubuntu-xenial
 
+COMMON_DOCKER_PROPS='"storage-driver": "overlay2"'
+
+# See if a docker volume device was provided
+if [ "$#" = 1 ]; then
+  mkfs -t ext3 $1
+  mkdir /opt/docker
+  mount $1 /opt/docker
+  DOCKER_VOL_PROPS='"graph":"/opt/docker"'
+fi
+
 systemctl stop docker
 modprobe overlay
-echo '{"storage-driver": "overlay2"}' > /etc/docker/daemon.json
+
+if [ "$DOCKER_VOL_PROPS" ] ; then
+  echo "{$COMMON_DOCKER_PROPS, $DOCKER_VOL_PROPS}" > /etc/docker/daemon.json
+else
+  echo "{$COMMON_DOCKER_PROPS}" > /etc/docker/daemon.json
+fi
 rm -rf /var/lib/docker/*
 systemctl start docker
 

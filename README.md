@@ -154,6 +154,23 @@ as a Kubernetes master for other nodes!
       
 Congratulations, you have a working multi-node Kubernetes cluster! You can
 repeat these steps to add as many new nodes as you want :)
+
+## Docker Storage Base Directory
+By default, Docker puts all of the images and other work files in a directory
+on the boot volume of the  instance, called `/var/lib/docker`. This is quite
+convenient for a simple trial system, but this directory can easily fill up
+causing disastrous results for your cluster.
+
+You can mount volumes on each of your nodes and provide an optional argument to
+`install-kubeadm.bash` to pass in the device ID for this volume. The script will
+handle all of the details of creating the file system, mounting it, and updating
+docker to use it.
+
+For example, if I've created a 75Gb volume which is known as `/dev/vdb` then
+I would run the install script as:
+```bash
+sudo ./install-kubeadm.bash /dev/vdb
+```
    
 ## Next step?
 
