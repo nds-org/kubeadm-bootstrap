@@ -20,6 +20,13 @@ if [ "$#" = 1 ]; then
   mkdir /opt/docker
   mount $1 /opt/docker
   DOCKER_VOL_PROPS='"graph":"/opt/docker"'
+
+  # Add to fstab to make mount permenent
+  lsblk -o NAME,FSTYPE,UUID,MOUNTPOINT $1 \
+       |grep ext3 \
+       | awk '{print "UUID="$3"  "$4"  "$2"  defaults 0 0"}' \
+       >> /etc/fstab
+
 fi
 
 systemctl stop docker
