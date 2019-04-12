@@ -20,6 +20,6 @@ systemctl start docker
 
 # Install kubernetes components!
 apt-get install -y \
-        kubelet=1.9.2-00 \
-        kubeadm=1.9.2-00 \
-        kubernetes-cni=0.6.0-00
+        kubelet=1.12.7-00 \
+        kubeadm=1.12.7-00 \
+        kubernetes-cni=0.7.5-00
