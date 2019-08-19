@@ -7,7 +7,9 @@ set -e
 # Read Pod Network type from first arg (default to Flannel)
 POD_NETWORK="${1:-flannel}"
 
-kubeadm init --pod-network-cidr=10.244.0.0/16
+POD_NETWORK_CIDR=10.244.0.0/16
+
+kubeadm init --pod-network-cidr=${POD_NETWORK_CIDR}
 
 # By now the master node should be ready!
 mkdir -p $HOME/.kube
@@ -21,7 +23,7 @@ elif [ "$POD_NETWORK" == "weave" ]; then
 	# Install weave
 	# From https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
 	sysctl net.bridge.bridge-nf-call-iptables=1
-	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')&env.IPALLOC_RANGE=${POD_NETWORK_CIDR}"
 else
 	echo "Unsupported pod network: $POD_NETWORK"
 	echo "Please choose a supported network type from one of the following: flannel weave"
