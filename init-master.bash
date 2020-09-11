@@ -40,10 +40,7 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
 
-# Install NFS provisioner (handled by other script)
-# helm install nfs stable/nfs-server-provisioner --namespace=kube-system --set storageClass.defaultClass=true
-
-# STABLE (allegedly), but needs testing
+# Deploy NGINX Ingress Controller
 helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
-
+helm install ingress nginx-stable/nginx-ingress --namespace=kube-system -f support/values.yaml
