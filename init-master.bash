@@ -4,8 +4,8 @@
 #
 set -e
 
-# Read Pod Network type from first arg (default to Flannel)
-POD_NETWORK="${1:-flannel}"
+# Read Pod Network type from first arg (default to Weave)
+POD_NETWORK="${1:-weave}"
 
 POD_NETWORK_CIDR=10.244.0.0/16
 
@@ -15,7 +15,7 @@ kubeadm init --pod-network-cidr=${POD_NETWORK_CIDR}
 # By now the master node should be ready!
 mkdir -p $HOME/.kube
 cp --remove-destination /etc/kubernetes/admin.conf $HOME/.kube/config
-chown ${SUDO_UID} $HOME/.kube/config
+chown ${SUDO_UID} -R $HOME/.kube
 
 if [ "$POD_NETWORK" == "flannel" ]; then
 	# Install flannel
@@ -31,33 +31,14 @@ else
 	exit 1
 fi
 
-
 # Make master node a running worker node too!
 # FIXME: Use taint tolerations instead in the future
-#kubectl taint nodes --all node-role.kubernetes.io/master-
-
-# Deprecated: Install Helm 2
-#curl https://storage.googleapis.com/kubernetes-helm/helm-v2.8.0-linux-amd64.tar.gz | tar xvz
-#mv linux-amd64/helm /usr/local/bin
-#rm -rf linux-amd64
-
-# Bootstrap and run tiller deployment
-#kubectl --namespace kube-system create sa tiller
-#kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-#helm init --service-account tiller
-#kubectl --namespace=kube-system patch deployment tiller-deploy --type=json --patch='[{"op": "add", "path": "/spec/template/spec/containers/0/command", "value": ["/tiller", "--listen=localhost:44134"]}]'
-
-# Wait for tiller to be ready!
-#kubectl rollout status --namespace=kube-system deployment/tiller-deploy --watch
+kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Install Helm 3 (no longer needs Tiller)
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
-
-# Install nginx and other support stuff!
-#cd support && helm dep up && cd ..
-#helm install --name=support --namespace=support support/
 
 # Install NFS provisioner (handled by other script)
 # helm install nfs stable/nfs-server-provisioner --namespace=kube-system --set storageClass.defaultClass=true
@@ -65,7 +46,4 @@ helm repo update
 # STABLE (allegedly), but needs testing
 helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
-helm install ingress nginx-stable/nginx-ingress --namespace=kube-system --set service.type=ClusterIP --set controller.hostNetwork=true --set controller.nodeSelector."external-ip"=true
 
-# DEPRECATED, but working
-#helm install ingress stable/nginx-ingress --namespace=kube-system --set controller.hostNetwork=true --set controller.nodeSelector."external-ip"=true
