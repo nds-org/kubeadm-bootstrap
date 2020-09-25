@@ -41,6 +41,4 @@ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
 
 # Deploy NGINX Ingress Controller
-helm repo add nginx-stable https://helm.nginx.com/stable
-helm repo update
-helm install ingress nginx-stable/nginx-ingress --namespace=kube-system -f support/values.yaml
+helm install ingress stable/nginx-ingress --namespace=kube-system -f support/values.yaml
