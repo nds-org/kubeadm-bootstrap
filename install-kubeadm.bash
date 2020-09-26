@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Install Docker + Kubernetes dependencies, add repos
-apt-get update  -qq
-apt-get install -qq --no-install-recommends apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+apt-get update  -qq && \
+  apt-get update  -qq && \
+  apt-get install -qq --no-install-recommends apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
@@ -11,9 +13,10 @@ deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
 EOF
 
 # Install Docker CE
-apt-get update -qq
-apt-get install -qq docker-ce docker-ce-cli containerd.io
-apt-mark hold docker-ce docker-ce-cli containerd.io
+apt-get update -qq && \
+  apt-get update -qq && \
+  apt-get install -qq docker-ce docker-ce-cli containerd.io && \
+  apt-mark hold docker-ce docker-ce-cli containerd.io
 
 # Configure Docker
 systemctl stop docker
@@ -23,8 +26,8 @@ rm -rf /var/lib/docker/*
 systemctl start docker
 
 # Install Kubernetes components
-apt-get install -qq kubelet kubeadm kubectl
-apt-mark hold kubelet kubeadm kubectl
+apt-get install -qq kubelet kubeadm kubectl && \
+  apt-mark hold kubelet kubeadm kubectl
 
 # Bootstrap system for Kubernetes
 cat <<EOF | >/etc/sysctl.d/k8s.conf
