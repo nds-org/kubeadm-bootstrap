@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Wait for instance to finish booting
+until [[ -f /var/lib/cloud/instance/boot-finished ]]; do
+  sleep 1
+done
+
 # Install Docker + Kubernetes dependencies, add repos
 apt-get update  -qq && \
   apt-get update  -qq && \
