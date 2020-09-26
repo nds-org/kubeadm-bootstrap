@@ -10,12 +10,10 @@ POD_NETWORK="${1:-weave}"
 POD_NETWORK_CIDR=10.244.0.0/16
 
 # Deploy Kubernetes cluster
-kubeadm init --pod-network-cidr=${POD_NETWORK_CIDR}
-
-# By now the master node should be ready!
-mkdir -p $HOME/.kube
-cp --remove-destination /etc/kubernetes/admin.conf $HOME/.kube/config
-chown ${SUDO_UID} -R $HOME/.kube
+kubeadm init --pod-network-cidr=${POD_NETWORK_CIDR} && \
+  mkdir -p $HOME/.kube && \
+  cp --remove-destination /etc/kubernetes/admin.conf $HOME/.kube/config && \
+  chown ${SUDO_UID} -R $HOME/.kube
 
 if [ "$POD_NETWORK" == "flannel" ]; then
 	# Install flannel
@@ -35,10 +33,8 @@ fi
 # FIXME: Use taint tolerations instead in the future
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
-# Install Helm 3 (no longer needs Tiller)
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm repo update
-
-# Deploy NGINX Ingress Controller
-helm install ingress stable/nginx-ingress --namespace=kube-system -f support/values.yaml
+# Install Helm 3 and deploy NGINX Ingress Controller
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash && \
+  helm repo add stable https://kubernetes-charts.storage.googleapis.com && \
+  helm repo update && \
+  helm install ingress stable/nginx-ingress --namespace=kube-system -f support/values.yaml
