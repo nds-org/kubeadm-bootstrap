@@ -31,7 +31,8 @@ rm -rf /var/lib/docker/*
 systemctl start docker
 
 # Install Kubernetes components
-apt-get install -qq kubelet kubeadm kubectl && \
+K8S_VERSION="1.19.3"
+apt-get install -qq kubelet=${K8S_VERSION}-00 kubeadm=${K8S_VERSION}-00 kubectl=${K8S_VERSION}-00 && \
   apt-mark hold kubelet kubeadm kubectl
 
 # Bootstrap system for Kubernetes
