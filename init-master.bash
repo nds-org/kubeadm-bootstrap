@@ -17,7 +17,7 @@ kubeadm init --pod-network-cidr=${POD_NETWORK_CIDR} && \
 
 if [ "$POD_NETWORK" == "flannel" ]; then
 	# Install flannel
-	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 elif [ "$POD_NETWORK" == "weave" ]; then
 	# Install weave
 	# From https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
