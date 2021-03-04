@@ -35,6 +35,6 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Install Helm 3 and deploy NGINX Ingress Controller
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash && \
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com && \
+  helm repo add stable https://charts.helm.sh/stable && \
   helm repo update && \
   helm install ingress stable/nginx-ingress --namespace=kube-system -f support/values.yaml
