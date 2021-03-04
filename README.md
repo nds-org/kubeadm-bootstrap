@@ -47,7 +47,7 @@ You must have ssh access to all the nodes. You also need root :)
 1. Install the pre-requisites for starting the master:
 
    ```bash
-   git clone https://github.com/data-8/kubeadm-bootstrap
+   git clone https://github.com/nds-org/kubeadm-bootstrap
    cd kubeadm-bootstrap
    sudo ./install-kubeadm.bash
    ```
